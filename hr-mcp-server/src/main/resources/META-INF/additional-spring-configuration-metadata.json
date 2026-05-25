@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spring.ai.mcp.server.stdio",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.mcp.server.stdio'"
+  },
+  {
+    "name": "spring.ai.mcp.server.name",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.mcp.server.name'"
+  },
+  {
+    "name": "spring.ai.mcp.server.version",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.mcp.server.version'"
+  },
+  {
+    "name": "spring.ai.mcp.server.version",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.ai.mcp.server.version'"
+  }
+]}
