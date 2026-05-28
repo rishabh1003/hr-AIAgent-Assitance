@@ -7,5 +7,6 @@ public class HrMcpApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HrMcpApplication.class, args);
+        System.setOut(System.err);
     }
 }

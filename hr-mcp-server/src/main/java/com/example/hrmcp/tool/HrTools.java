@@ -21,47 +21,52 @@ public class HrTools {
         this.repository = repository;
     }
 
-    @Tool(name = "get_pto_balance", description = "Retrieves the live PTO (Paid Time Off) balance in days for a specific employee ID.")
-    public Mono<String> getPtoBalance(
-            @ToolParam(description = "The exact Employee ID (e.g., 'EMP-992')", required = false) String employeeId, 
-            McpAsyncRequestContext ctx) {
+//    @Tool(name = "get_pto_balance", description = "Retrieves the live PTO (Paid Time Off) balance in days for a specific employee ID.")
+// public Mono<String> getPtoBalance(
+//         @ToolParam(description = "The exact Employee ID (e.g., 'EMP-992')", required = false) String employeeId, 
+//         McpAsyncRequestContext ctx) {
+    
+//     // PATH A: The LLM already has the ID (No elicitation needed)
+//     if (employeeId != null && !employeeId.isBlank()) {
+//         return Mono.just(fetchFromDatabase(employeeId));
+//     }
+
+//     // PATH B & C: Check if elicitation is enabled reactively
+//     return ctx.elicitEnabled().flatMap(isEnabled -> {
         
-        // PATH A: The LLM already has the ID (No elicitation needed)
-        if (employeeId != null && !employeeId.isBlank()) {
-            return Mono.just(fetchFromDatabase(employeeId));
-        }
+//         // Unwrap the Mono: 'isEnabled' is now a standard primitive boolean
+//         if (!isEnabled) {
+//             return Mono.just("Error: Missing Employee ID. Please ask the user to provide their exact Employee ID.");
+//         }
 
-        // PATH B: ID is missing, but the Client UI doesn't support pausing for input
-        // FIX: elicitEnabled() is a boolean, not an object.
-        if (ctx.elicitEnabled()==null) {
-            return Mono.just("Error: Missing Employee ID. Please ask the user to provide their exact Employee ID.");
-        }
-
-        // PATH C: Elicitation - Pause the server and ask the user for the missing ID
-        // FIX: ctx.elicit returns a Mono. We must use .map() to handle the result once the user replies.
-        return ctx.elicit(
-                e -> e.message("Let's complete the request. Please provide your Employee ID:"),
-                MissingData.class
-        ).map(result -> {
+//         // PATH C: Elicitation - Pause the server and ask the user for the missing ID
+//         return ctx.elicit(
+//                 e -> e.message("Let's complete the request. Please provide your Employee ID:"),
+//                 MissingData.class
+//         ).map(result -> {
             
-            // 2. Safely check if the user cancelled or declined the prompt
-            if (result.action() != McpSchema.ElicitResult.Action.ACCEPT) {
-                return "Request cancelled: No Employee ID was provided.";
-            }
+//             // Safely check if the user cancelled or declined the prompt
+//             if (result.action() != McpSchema.ElicitResult.Action.ACCEPT) {
+//                 return "Request cancelled: No Employee ID was provided.";
+//             }
 
-            // 3. Extract the clean data from our record and fetch from the database
-            MissingData data = result.structuredContent();
-            if (data != null && data.employeeId() != null) {
-                return fetchFromDatabase(data.employeeId());
-            } else {
-                return "Error: Invalid data received.";
-            }
-        });
-    }
+//             // Extract the clean data from our record and fetch from the database
+//             MissingData data = result.structuredContent();
+//             if (data != null && data.employeeId() != null) {
+//                 return fetchFromDatabase(data.employeeId());
+//             } else {
+//                 return "Error: Invalid data received.";
+//             }
+//         });
+//     });
+// }
+ 
+@Tool(name = "ping_test", description = "A simple test tool to check if tools are registering.")
+public String pingTest() {
+    return "The tool system is working!";
+}
 
-    private String fetchFromDatabase(String id) {
-        return repository.findByEmployeeId(id)
-                .map(emp -> "PTO Balance for " + id + " is " + emp.getPtoBalance() + " days.")
-                .orElse("Error: Employee ID not found in the database.");
-    }
+// private String fetchFromDatabase(String id) {
+//         return "return database response";
+//     }
 }
