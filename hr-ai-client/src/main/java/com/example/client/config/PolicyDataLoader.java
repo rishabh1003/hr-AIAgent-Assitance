@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Simulates ingesting the HR PDF into the Vector DB on startup.
- */
+
 @Component
 public class PolicyDataLoader implements CommandLineRunner {
     
