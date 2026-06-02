@@ -1,8 +1,12 @@
 package com.example.hrmcp.tool;
 
+import com.example.hrmcp.model.Employee;
 import com.example.hrmcp.repository.EmployeeRepository;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import org.springaicommunity.mcp.annotation.McpTool;
 import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springaicommunity.mcp.context.McpAsyncRequestContext;
@@ -67,9 +71,15 @@ public class HrTools {
         return Mono.just("The tool system is working!");
     }
 
-    private String fetchFromDatabase(String id) {
-        // Ensure this method safely handles whatever type your JPA repository returns (Entity or String)
-        Object result = repository.findByEmployeeId(id);
-        return result != null ? result.toString() : "No employee found with ID: " + id;
-    }
+   private String fetchFromDatabase(String id) {
+    // 1. Capture the true reactive/JPA wrapper type
+    Optional<Employee> employeeOptional = repository.findByEmployeeId(id);
+    
+    // 2. Cleanly unwrap the Optional container using functional mapping
+    return employeeOptional.map(employee -> {
+        // Extract the exact property needed for this tool response.
+        // Replace 'getPtoBalance()' or 'getName()' with the actual getter names inside your Employee entity.
+        return "Employee ID " + id + " has " + employee.getPtoBalance() + " days of remaining PTO balance.";
+    }).orElse("No employee found with ID: " + id);
+}
 }
